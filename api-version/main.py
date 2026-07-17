@@ -129,3 +129,30 @@ def update_bill(bill_id: int, bill: Bill):
     conn.close()
 
     return {"message": "Bill updated successfully"}
+@app.get("/summary")
+def get_summary():
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT
+            COALESCE(SUM(CASE WHEN type = 'income' THEN money ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN type = 'expense' THEN money ELSE 0 END), 0)
+        FROM bills
+        """
+    )
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    income = float(row[0])
+    expense = float(row[1])
+
+    return {
+        "total_income": income,
+        "total_expense": expense,
+        "balance": income - expense
+    }
