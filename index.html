@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Finance Tracker</title>
+</head>
+<body>
+
+    <h1>Personal Finance Tracker</h1>
+
+    <h2>Add Bill</h2>
+    <input id="type" placeholder="type (income/expense)">
+    <input id="money" placeholder="money">
+    <input id="category" placeholder="category">
+    <input id="remark" placeholder="remark">
+    <button onclick="addBill()">Add</button>
+
+    <h2>All Bills</h2>
+    <button onclick="loadBills()">Refresh</button>
+    <ul id="list"></ul>
+
+    <script>
+        const API_URL = "https://personal-finance-api-aehs.onrender.com";
+
+        async function addBill() {
+            const data = {
+                type: document.getElementById("type").value,
+                money: parseFloat(document.getElementById("money").value),
+                category: document.getElementById("category").value,
+                remark: document.getElementById("remark").value
+            };
+
+            await fetch(API_URL + "/bills", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            loadBills();
+        }
+
+        async function loadBills() {
+            const res = await fetch(API_URL + "/bills");
+            const bills = await res.json();
+
+            const list = document.getElementById("list");
+            list.innerHTML = "";
+
+            bills.forEach(b => {
+                const li = document.createElement("li");
+                li.innerText = `${b.type} - $${b.money} - ${b.category} - ${b.remark}`;
+
+                const btn = document.createElement("button");
+                btn.innerText = "Delete";
+                btn.onclick = () => deleteBill(b.id);
+
+                li.appendChild(btn);
+                list.appendChild(li);
+            });
+        }
+
+        async function deleteBill(id) {
+            await fetch(API_URL + "/bills/" + id, {
+                method: "DELETE"
+            });
+            loadBills();
+        }
+    </script>
+
+</body>
+</html>
