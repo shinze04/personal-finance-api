@@ -2,10 +2,55 @@
 <html>
 <head>
     <title>Finance Tracker</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #list {
+            padding: 0;
+        }
+
+        li {
+            list-style: none;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        li button {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
 
     <h1>Personal Finance Tracker</h1>
+
+    <div>
+    <h2>Summary</h2>
+    <p>Total Income: $<span id="income">0</span></p>
+    <p>Total Expense: $<span id="expense">0</span></p>
+    <p>Balance: $<span id="balance">0</span></p>
+    </div>
 
     <h2>Add Bill</h2>
     <input id="type" placeholder="type (income/expense)">
@@ -20,6 +65,15 @@
 
     <script>
         const API_URL = "https://personal-finance-api-aehs.onrender.com";
+
+        async function loadSummary() {
+    const res = await fetch(API_URL + "/summary");
+    const data = await res.json();
+
+    document.getElementById("income").innerText = data.total_income;
+    document.getElementById("expense").innerText = data.total_expense;
+    document.getElementById("balance").innerText = data.balance;
+        }
 
         async function addBill() {
             const data = {
@@ -38,6 +92,7 @@
             });
 
             loadBills();
+            loadSummary();
         }
 
 
@@ -75,6 +130,7 @@
             });
 
             loadBills();
+            loadSummary();  
         }
 
 
@@ -95,10 +151,12 @@
             });
 
             loadBills();
+            loadSummary();
         }
 
 
         loadBills();
+        loadSummary();
 
     </script>
 

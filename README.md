@@ -1,65 +1,43 @@
-# Personal Finance API
+# Personal Finance Tracker
 
-A simple personal finance management API built with FastAPI and PostgreSQL.
+A full-stack personal finance tracking application that allows users to manage expenses, view bills, and monitor spending summaries.
 
 ## Features
-- Add a bill
+
+- Create new bills
 - View all bills
-- Delete a bill
+- Edit existing bills
+- Delete bills
+- Calculate spending summary
+- Frontend and backend integration
+- PostgreSQL database storage
+- REST API design
+- Cloud deployment
+
 
 ## Tech Stack
+
+### Frontend
+- HTML
+- CSS
+- JavaScript
+- Fetch API
+
+### Backend
 - Python
 - FastAPI
 - PostgreSQL
 - psycopg2
+
+### Deployment
 - Render
 
+
 ## Live Demo
+
+Backend API Documentation:
+
 https://personal-finance-api-aehs.onrender.com/docs
 
-## API Endpoints
 
-### POST /bills
-```json
-{
-  "type": "expense",
-  "money": 20,
-  "category": "food",
-  "remark": "lunch"
-}
-```
-
-### GET /bills
-
-### DELETE /bills/{id}
-
-## Setup
-
-```
-pip install -r requirements.txt
-cd api-version
-uvicorn main:app --reload
-```
-
-## Environment Variables
-
-```
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-DB_HOST=
-DB_PORT=
-```
-
-## Database Schema
-
-```sql
-CREATE TABLE bills (
-    id SERIAL PRIMARY KEY,
-    type TEXT NOT NULL,
-    money NUMERIC NOT NULL,
-    category TEXT NOT NULL,
-    remark TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+## Project Structure
