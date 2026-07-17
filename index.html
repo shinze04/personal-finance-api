@@ -48,16 +48,16 @@
             list.innerHTML = "";
 
             bills.forEach(b => {
-                const li = document.createElement("li");
-                li.innerText = `${b.type} - $${b.money} - ${b.category} - ${b.remark}`;
+    const li = document.createElement("li");
+    li.innerText = `${b.type} - $${b.money} - ${b.category} - ${b.remark}`;
 
-                const btn = document.createElement("button");
-                btn.innerText = "Delete";
-                btn.onclick = () => deleteBill(b.id);
+    const btn = document.createElement("button");
+    btn.innerText = "Delete";
+    btn.onclick = () => deleteBill(b.id);
 
-                li.appendChild(btn);
-                list.appendChild(li);
-            });
+    li.appendChild(btn);
+    list.appendChild(li);
+});
         }
 
         async function deleteBill(id) {

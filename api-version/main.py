@@ -95,3 +95,37 @@ def delete_bill(bill_id: int):
     conn.close()
 
     return {"message": "Bill deleted successfully"}
+@app.put("/bills/{bill_id}")
+def update_bill(bill_id: int, bill: Bill):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        UPDATE bills
+        SET type = %s,
+            money = %s,
+            category = %s,
+            remark = %s
+        WHERE id = %s
+        """,
+        (
+            bill.type,
+            bill.money,
+            bill.category,
+            bill.remark,
+            bill_id
+        )
+    )
+
+    conn.commit()
+
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return {"error": "Bill not found"}
+
+    cur.close()
+    conn.close()
+
+    return {"message": "Bill updated successfully"}
