@@ -40,6 +40,7 @@
             loadBills();
         }
 
+
         async function loadBills() {
             const res = await fetch(API_URL + "/bills");
             const bills = await res.json();
@@ -48,24 +49,57 @@
             list.innerHTML = "";
 
             bills.forEach(b => {
-    const li = document.createElement("li");
-    li.innerText = `${b.type} - $${b.money} - ${b.category} - ${b.remark}`;
+                const li = document.createElement("li");
 
-    const btn = document.createElement("button");
-    btn.innerText = "Delete";
-    btn.onclick = () => deleteBill(b.id);
+                li.innerText = `${b.type} - $${b.money} - ${b.category} - ${b.remark}`;
 
-    li.appendChild(btn);
-    list.appendChild(li);
-});
+                const editBtn = document.createElement("button");
+                editBtn.innerText = "Edit";
+                editBtn.onclick = () => editBill(b);
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.innerText = "Delete";
+                deleteBtn.onclick = () => deleteBill(b.id);
+
+                li.appendChild(editBtn);
+                li.appendChild(deleteBtn);
+
+                list.appendChild(li);
+            });
         }
+
 
         async function deleteBill(id) {
             await fetch(API_URL + "/bills/" + id, {
                 method: "DELETE"
             });
+
             loadBills();
         }
+
+
+        async function editBill(bill) {
+            const data = {
+                type: prompt("Type:", bill.type),
+                money: parseFloat(prompt("Money:", bill.money)),
+                category: prompt("Category:", bill.category),
+                remark: prompt("Remark:", bill.remark)
+            };
+
+            await fetch(API_URL + "/bills/" + bill.id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            loadBills();
+        }
+
+
+        loadBills();
+
     </script>
 
 </body>
