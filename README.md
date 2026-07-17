@@ -7,13 +7,9 @@ A full-stack personal finance tracking application that allows users to manage e
 - Create new bills
 - View all bills
 - Edit existing bills
-- Delete bills
+- Delete existing bills
 - Calculate spending summary
 - Frontend and backend integration
-- PostgreSQL database storage
-- REST API design
-- Cloud deployment
-
 
 ## Tech Stack
 
@@ -32,16 +28,31 @@ A full-stack personal finance tracking application that allows users to manage e
 ### Deployment
 - Render
 
+## API Documentation
 
-## Live Demo
-
-Backend API Documentation:
+FastAPI Swagger documentation:
 
 https://personal-finance-api-aehs.onrender.com/docs
 
-
 ## Project Structure
 
+```text
+Accounting App
+
+├── api-version
+│   ├── database.py
+│   └── main.py
+│
+├── cli-version
+│   └── account_book.py
+│
+├── screenshots
+│   └── dashboard.png
+│
+├── index.html
+├── requirements.txt
+└── README.md
+```
 
 ## Screenshots
 
