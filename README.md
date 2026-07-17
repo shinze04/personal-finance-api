@@ -41,3 +41,10 @@ https://personal-finance-api-aehs.onrender.com/docs
 
 
 ## Project Structure
+
+
+## Screenshots
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
