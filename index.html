@@ -6,22 +6,63 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 900px;
             margin: 40px auto;
             padding: 20px;
+            background-color: #f5f6fa;
+            color: #333;
         }
 
         h1 {
             text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
         }
 
-        input, button {
-            padding: 8px;
+        h2 {
+            margin-top: 30px;
+        }
+
+        #summary {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        input {
+            padding: 10px;
             margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
         }
 
         button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
+            background-color: #333;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.8;
         }
 
         #list {
@@ -30,135 +71,218 @@
 
         li {
             list-style: none;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         li button {
+            float: right;
             margin-left: 10px;
         }
     </style>
 </head>
+
 <body>
 
-    <h1>Personal Finance Tracker</h1>
+<h1>Personal Finance Tracker</h1>
 
-    <div>
-    <h2>Summary</h2>
-    <p>Total Income: $<span id="income">0</span></p>
-    <p>Total Expense: $<span id="expense">0</span></p>
-    <p>Balance: $<span id="balance">0</span></p>
+<div id="summary">
+
+    <div class="card">
+        <h2>Income</h2>
+        <p>$<span id="income">0</span></p>
     </div>
 
-    <h2>Add Bill</h2>
-    <input id="type" placeholder="type (income/expense)">
-    <input id="money" placeholder="money">
-    <input id="category" placeholder="category">
-    <input id="remark" placeholder="remark">
-    <button onclick="addBill()">Add</button>
+    <div class="card">
+        <h2>Expense</h2>
+        <p>$<span id="expense">0</span></p>
+    </div>
 
-    <h2>All Bills</h2>
-    <button onclick="loadBills()">Refresh</button>
-    <ul id="list"></ul>
+    <div class="card">
+        <h2>Balance</h2>
+        <p>$<span id="balance">0</span></p>
+    </div>
 
-    <script>
-        const API_URL = "https://personal-finance-api-aehs.onrender.com";
+</div>
 
-        async function loadSummary() {
+
+<h2>Add Bill</h2>
+
+<input id="type" placeholder="type (income/expense)">
+<input id="money" placeholder="money">
+<input id="category" placeholder="category">
+<input id="remark" placeholder="remark">
+
+<button onclick="addBill()">Add</button>
+
+
+<h2>All Bills</h2>
+
+<button onclick="loadBills()">Refresh</button>
+
+<ul id="list"></ul>
+
+
+<script>
+
+const API_URL = "https://personal-finance-api-aehs.onrender.com";
+
+
+async function loadSummary() {
+
     const res = await fetch(API_URL + "/summary");
     const data = await res.json();
 
     document.getElementById("income").innerText = data.total_income;
     document.getElementById("expense").innerText = data.total_expense;
     document.getElementById("balance").innerText = data.balance;
-        }
 
-        async function addBill() {
-            const data = {
-                type: document.getElementById("type").value,
-                money: parseFloat(document.getElementById("money").value),
-                category: document.getElementById("category").value,
-                remark: document.getElementById("remark").value
-            };
-
-            await fetch(API_URL + "/bills", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-
-            loadBills();
-            loadSummary();
-        }
+}
 
 
-        async function loadBills() {
-            const res = await fetch(API_URL + "/bills");
-            const bills = await res.json();
+async function addBill() {
 
-            const list = document.getElementById("list");
-            list.innerHTML = "";
-
-            bills.forEach(b => {
-                const li = document.createElement("li");
-
-                li.innerText = `${b.type} - $${b.money} - ${b.category} - ${b.remark}`;
-
-                const editBtn = document.createElement("button");
-                editBtn.innerText = "Edit";
-                editBtn.onclick = () => editBill(b);
-
-                const deleteBtn = document.createElement("button");
-                deleteBtn.innerText = "Delete";
-                deleteBtn.onclick = () => deleteBill(b.id);
-
-                li.appendChild(editBtn);
-                li.appendChild(deleteBtn);
-
-                list.appendChild(li);
-            });
-        }
+    const data = {
+        type: document.getElementById("type").value,
+        money: parseFloat(document.getElementById("money").value),
+        category: document.getElementById("category").value,
+        remark: document.getElementById("remark").value
+    };
 
 
-        async function deleteBill(id) {
-            await fetch(API_URL + "/bills/" + id, {
-                method: "DELETE"
-            });
-
-            loadBills();
-            loadSummary();  
-        }
-
-
-        async function editBill(bill) {
-            const data = {
-                type: prompt("Type:", bill.type),
-                money: parseFloat(prompt("Money:", bill.money)),
-                category: prompt("Category:", bill.category),
-                remark: prompt("Remark:", bill.remark)
-            };
-
-            await fetch(API_URL + "/bills/" + bill.id, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-
-            loadBills();
-            loadSummary();
-        }
+    await fetch(API_URL + "/bills", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
 
 
-        loadBills();
-        loadSummary();
+    loadBills();
+    loadSummary();
 
-    </script>
+}
+
+
+
+async function loadBills() {
+
+    const res = await fetch(API_URL + "/bills");
+
+    const bills = await res.json();
+
+
+    const list = document.getElementById("list");
+
+    list.innerHTML = "";
+
+
+    bills.forEach(b => {
+
+        const li = document.createElement("li");
+
+
+        li.innerText =
+        `${b.type} - $${b.money} - ${b.category} - ${b.remark}`;
+
+
+        const editBtn = document.createElement("button");
+
+        editBtn.innerText = "Edit";
+
+        editBtn.onclick = () => editBill(b);
+
+
+
+        const deleteBtn = document.createElement("button");
+
+        deleteBtn.innerText = "Delete";
+
+        deleteBtn.onclick = () => deleteBill(b.id);
+
+
+
+        li.appendChild(editBtn);
+
+        li.appendChild(deleteBtn);
+
+
+        list.appendChild(li);
+
+    });
+
+}
+
+
+
+async function deleteBill(id) {
+
+
+    await fetch(API_URL + "/bills/" + id, {
+
+        method: "DELETE"
+
+    });
+
+
+    loadBills();
+
+    loadSummary();
+
+}
+
+
+
+async function editBill(bill) {
+
+
+    const data = {
+
+        type: prompt("Type:", bill.type),
+
+        money: parseFloat(prompt("Money:", bill.money)),
+
+        category: prompt("Category:", bill.category),
+
+        remark: prompt("Remark:", bill.remark)
+
+    };
+
+
+    await fetch(API_URL + "/bills/" + bill.id, {
+
+        method: "PUT",
+
+        headers: {
+
+            "Content-Type": "application/json"
+
+        },
+
+        body: JSON.stringify(data)
+
+    });
+
+
+    loadBills();
+
+    loadSummary();
+
+}
+
+
+
+loadBills();
+
+loadSummary();
+
+
+</script>
+
 
 </body>
 </html>
